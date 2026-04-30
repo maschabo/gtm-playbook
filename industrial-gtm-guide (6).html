@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTM Playbook for AI & B2B Software Founders</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-dark: #054035;
+    --teal-mid: #0F6E56;
+    --teal-light: #E1F5EE;
+    --teal-text: #085041;
+    --purple-dark: #26215C;
+    --purple-mid: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-text: #3C3489;
+    --ink: #1a1a1a;
+    --ink-muted: #555;
+    --ink-faint: #999;
+    --border: #e5e5e0;
+    --bg: #fafaf8;
+    --white: #ffffff;
+    --danger: #c0392b;
+    --danger-light: #fdf0ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.7; }
+
+  /* NAV */
+  nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 2rem; height: 56px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--ink); text-decoration: none; white-space: nowrap; }
+  .nav-logo span { color: var(--teal-mid); }
+  .nav-back { font-size: 13px; color: var(--ink-muted); cursor: pointer; display: none; align-items: center; gap: 6px; background: none; border: none; font-family: inherit; }
+  .nav-back:hover { color: var(--ink); }
+  .nav-back svg { width: 14px; height: 14px; }
+
+  /* HERO */
+  .hero { padding: 4rem 2rem 3rem; max-width: 860px; margin: 0 auto; }
+  .hero-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; color: var(--teal-mid); text-transform: uppercase; margin-bottom: 1rem; }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; color: var(--ink); margin-bottom: 1rem; }
+  .hero p { font-size: 16px; color: var(--ink-muted); max-width: 560px; line-height: 1.7; }
+
+  /* MATRIX */
+  .matrix-wrap { max-width: 960px; margin: 0 auto; padding: 0 2rem 4rem; }
+  .matrix-instructions { font-size: 13px; color: var(--ink-faint); margin-bottom: 1.5rem; }
+
+  .matrix-row { display: grid; grid-template-columns: 100px repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+  .row-label { display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; }
+  .row-label-inner { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; text-align: right; line-height: 1.4; }
+  .row-label-inner.ind { color: var(--teal-text); }
+  .row-label-inner.saas { color: var(--purple-text); }
+
+  .phase-headers { display: grid; grid-template-columns: 100px repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+  .phase-header-empty { }
+  .phase-header { text-align: center; font-size: 11px; font-weight: 500; color: var(--ink-faint); padding: 4px 0; letter-spacing: 0.03em; }
+
+  .cell {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 14px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+    min-height: 110px;
+  }
+  .cell:hover { border-color: #bbb; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .cell.ind { border-left: 3px solid var(--teal-mid); }
+  .cell.saas { border-left: 3px solid var(--purple-mid); }
+  .cell.published { }
+  .cell.draft { opacity: 0.55; }
+  .cell-phase { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+  .cell.ind .cell-phase { color: var(--teal-mid); }
+  .cell.saas .cell-phase { color: var(--purple-mid); }
+  .cell-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 6px; line-height: 1.35; }
+  .cell-topics { font-size: 11px; color: var(--ink-faint); line-height: 1.6; }
+  .cell-status { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; margin-top: 8px; }
+  .status-published { background: #e8f5e9; color: #2e7d32; }
+  .status-draft { background: #f5f5f5; color: #999; }
+
+  /* DETAIL VIEW */
+  #detail-view { display: none; max-width: 860px; margin: 0 auto; padding: 2rem 2rem 4rem; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .detail-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .badge { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+  .badge-ind { background: var(--teal-light); color: var(--teal-text); }
+  .badge-saas { background: var(--purple-light); color: var(--purple-text); }
+  .badge-phase { background: #f0f0ec; color: var(--ink-muted); }
+
+  .detail-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.5rem, 3vw, 2.2rem); line-height: 1.2; margin-bottom: 0.5rem; }
+  .detail-subtitle { font-size: 15px; color: var(--ink-muted); margin-bottom: 2rem; }
+
+  .detail-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+  @media (max-width: 600px) { .detail-cards { grid-template-columns: 1fr; } }
+  .detail-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+  .detail-card-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+  .detail-card ul { padding-left: 16px; }
+  .detail-card li { font-size: 13.5px; color: var(--ink); margin-bottom: 6px; line-height: 1.55; }
+  .detail-card.pitfalls li { color: var(--danger); }
+  .detail-card.pitfalls { border-color: #f5d0cc; background: var(--danger-light); }
+  .detail-card.pitfalls .detail-card-label { color: var(--danger); }
+
+  .transition-box { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--teal-mid); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .transition-box.saas { border-left-color: var(--purple-mid); }
+  .transition-box-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+  .transition-box p { font-size: 14px; color: var(--ink); line-height: 1.6; }
+
+  .read-article-btn {
+    display: inline-block; background: var(--teal-mid); color: white; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; padding: 12px 24px; border-radius: 8px; border: none;
+    cursor: pointer; text-decoration: none; transition: background 0.15s;
+    margin-right: 10px;
+  }
+  .read-article-btn:hover { background: var(--teal-dark); }
+  .read-article-btn.saas { background: var(--purple-mid); }
+  .read-article-btn.saas:hover { background: var(--purple-dark); }
+  .coming-soon-btn {
+    display: inline-block; background: #f0f0ec; color: var(--ink-muted); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 400; padding: 12px 24px; border-radius: 8px; border: 1px solid var(--border);
+    cursor: default;
+  }
+
+  /* ARTICLE VIEW */
+  #article-view { display: none; max-width: 680px; margin: 0 auto; padding: 2rem 2rem 5rem; animation: fadeIn 0.2s ease; }
+  .article-meta { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .article-body h1 { font-family: 'DM Serif Display', serif; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.15; margin-bottom: 0.75rem; }
+  .article-body .lede { font-size: 17px; color: var(--ink-muted); line-height: 1.65; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); font-style: italic; }
+  .article-body h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin: 2.5rem 0 0.75rem; color: var(--ink); }
+  .article-body h3 { font-size: 1rem; font-weight: 500; margin: 1.5rem 0 0.5rem; color: var(--ink); }
+  .article-body p { margin-bottom: 1rem; color: var(--ink); font-size: 15.5px; line-height: 1.75; }
+  .article-body ul, .article-body ol { padding-left: 20px; margin-bottom: 1rem; }
+  .article-body li { margin-bottom: 6px; font-size: 15.5px; line-height: 1.7; color: var(--ink); }
+  .article-body strong { font-weight: 500; }
+  .article-body blockquote { border-left: 3px solid var(--teal-mid); padding: 1rem 1.25rem; margin: 1.5rem 0; background: var(--teal-light); border-radius: 0 8px 8px 0; }
+  .article-body blockquote p { color: var(--teal-text); font-style: italic; margin: 0; font-size: 14.5px; }
+  .checklist { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+  .checklist-title { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+  .checklist li { list-style: none; padding-left: 0; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 14px; }
+  .checklist li::before { content: ''; width: 16px; height: 16px; min-width: 16px; border: 1.5px solid var(--teal-mid); border-radius: 4px; margin-top: 3px; display: block; }
+  .next-link { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 13px; color: var(--ink-muted); }
+  .next-link span { display: block; font-size: 15px; font-weight: 500; color: var(--teal-mid); cursor: pointer; margin-top: 4px; }
+  .next-link span:hover { text-decoration: underline; }
+
+  .cell.app { border-left: 3px solid #bbb; }
+  #matrix-view { }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#" onclick="showView('matrix')"><span>GTM</span> Playbook — AI & B2B Founders</a>
+  <button class="nav-back" id="nav-back" onclick="handleBack()">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
+    Back
+  </button>
+</nav>
+
+<!-- MATRIX VIEW -->
+<div id="matrix-view">
+  <div class="hero">
+    <div class="hero-label">Hitachi Ventures · Founder Series</div>
+    <h1>GTM Playbook for<br>AI & B2B Software Founders</h1>
+    <p>How to sell software and AI into complex organisations — comparing the industrial and enterprise SaaS motions across every stage. Click any article to explore.</p>
+  </div>
+
+  <div class="matrix-wrap">
+    <p class="matrix-instructions">Click a cell to see key takeaways, pitfalls, and phase transition signals.</p>
+
+    <div class="phase-headers">
+      <div class="phase-header-empty"></div>
+      <div class="phase-header">Get Access</div>
+      <div class="phase-header">Win the Pilot</div>
+      <div class="phase-header">Make it Repeatable</div>
+      <div class="phase-header">Build the Machine</div>
+    </div>
+
+    <div class="matrix-row" id="row-ind"></div>
+    <div class="matrix-row" id="row-saas"></div>
+
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <p style="font-size:11px;color:var(--ink-faint);margin-bottom:10px;padding-left:110px">Appendix — reference material, no interview dependency</p>
+      <div class="matrix-row" style="grid-template-columns:100px 1fr 1fr" id="row-app"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL VIEW -->
+<div id="detail-view">
+  <div class="detail-meta" id="detail-meta"></div>
+  <h1 class="detail-title" id="detail-title"></h1>
+  <p class="detail-subtitle" id="detail-subtitle"></p>
+  <div class="detail-cards" id="detail-cards"></div>
+  <div id="detail-transition"></div>
+  <div id="detail-cta"></div>
+</div>
+
+<!-- ARTICLE VIEW -->
+<div id="article-view">
+  <div class="article-meta" id="article-meta"></div>
+  <div class="article-body" id="article-body"></div>
+</div>
+
+<script id="article-data" type="application/json">
+{"i0":"\n<h1>Get Access: Foundations</h1>\n<p class=\"lede\">Before you can sell anything to an industrial client, you need to build the infrastructure that makes selling possible. This is the work most founders skip — and the reason most of them spend 18 months wondering why nobody returns their calls.</p>\n\n<h2>The problem most founders discover too late</h2>\n<p>Industrial buyers don't respond to cold outreach. They don't sign up for trials. They don't click your LinkedIn ad. They buy from people they trust — or from people who come recommended by someone they trust.</p>\n<p>For founders coming from enterprise SaaS, this is a rude awakening. The playbook you know — outbound sequences, product-led growth, inbound content — does almost nothing in your first 12 months selling to a plant manager or a VP of Operations at a manufacturing firm. Market access isn't a sales tactic you deploy after building your product. It's a prerequisite you build before you have your first serious conversation.</p>\n<p>Planet A's manufacturing GTM research, drawing on 30+ industrial founders and corporate buyers, puts it directly: <em>\"Customers behave very differently from classic Enterprise SaaS buyers: journeys are non-linear, solutions aren't plug-and-play, and growth depends more on asset footprint than on user seats.\"</em></p>\n\n<h2>1. ICP definition: operational context over firmographics</h2>\n<p>Most ICP frameworks ask you to define your ideal customer by company size, industry, and geography. That's a start — but for industrial sales, it's not enough.</p>\n<p>A €500M German automotive tier-1 supplier and a €500M US food & beverage manufacturer might look identical on a firmographic filter. They are completely different buyers. One has a heavily unionised shop floor, legacy OT systems from the 1990s, and a procurement process that takes 14 months. The other is greenfield, has a CTO who came from tech, and can move in 90 days.</p>\n<p>Your ICP needs to capture <strong>operational context</strong>:</p>\n<ul>\n  <li><strong>Brownfield vs. greenfield.</strong> Are you integrating into existing infrastructure or starting fresh? Brownfield is harder, slower, and more expensive to integrate — but it's also where most of the market is.</li>\n  <li><strong>Capex cycle timing.</strong> Industrial companies make large technology investments on fixed cycles, often tied to plant upgrades or annual budget rounds. If you're pitching six months after the cycle closed, you're waiting 18 months for a decision regardless of how good your product is.</li>\n  <li><strong>OT/IT maturity.</strong> Does the plant have a functioning data infrastructure, or are you starting from paper-based processes? Low OT maturity means longer integration timelines and more services work.</li>\n  <li><strong>Decision-making structure.</strong> Is technology bought centrally or at the plant level? Who has veto power — EHS, IT, operations? How many people need to say yes?</li>\n  <li><strong>Digital transformation readiness.</strong> Has this company completed at least one prior software implementation? Companies with existing digital transformation experience have the \"muscle memory\" for how to buy — and deploy — software. Those without it are learning on your dime.</li>\n</ul>\n\n<blockquote><p>[Founder interview placeholder] \"The first six months, I was pitching the wrong person in the wrong type of plant. We had great demos, everyone was excited, and nothing closed. Then we realised we needed to be talking to companies that had already done one digital transformation project — they had the muscle memory for how to buy this.\"</p></blockquote>\n\n<h2>2. Market access strategy: warm intros or nothing</h2>\n<p>Cold outreach to industrial buyers has a close-to-zero conversion rate at the early stage. A plant manager who has never heard of you, receiving a cold LinkedIn message about an AI-powered quality inspection system, has no reason to respond. Their inbox is full of vendors. Their job is to keep the line running.</p>\n<p>The only way in is a warm introduction from someone the buyer already respects. That means your first job as a founder isn't to build a sales deck. It's to build the relationship infrastructure that makes warm intros possible.</p>\n<p><strong>Where those intros come from:</strong></p>\n<ul>\n  <li>Industry advisors who have operated at the plant or corporate level in your target sector</li>\n  <li>Trade association relationships — not sponsorships, but genuine participation where buyers know your name before you pitch</li>\n  <li>Former colleagues or customers of your target buyer who can vouch for you personally</li>\n  <li>Investors with relevant industrial networks — rare, but valuable when it exists</li>\n</ul>\n<p>The test is simple: can you get a first meeting without sending a cold message? If not, your market access infrastructure isn't ready yet.</p>\n\n<blockquote><p>[Founder interview placeholder] \"We spent three months doing outbound before someone told us it wasn't going to work. The meeting that led to our first customer came from a phone call my advisor made on a Tuesday afternoon. The buyer picked up because he'd known my advisor for 20 years.\"</p></blockquote>\n\n<h2>3. Lighthouse account selection: replicable, not just winnable</h2>\n<p>Your first customer in industrial is not just a revenue event. It is a proof point, a reference, an integration template, and a signal to every subsequent buyer about what kind of company you are. Choose it accordingly.</p>\n<p>The instinct is to take whoever says yes. Resist it. The wrong first customer can set you back further than no customer at all — particularly if they are so unique that nothing about the engagement transfers to your next account.</p>\n<p><strong>What makes a good lighthouse account:</strong></p>\n<ul>\n  <li><strong>Operationally replicable.</strong> Their plant setup, data infrastructure, and integration requirements should be close to the median for your target segment — not the easiest possible case.</li>\n  <li><strong>Reference-willing.</strong> They need to be willing to speak publicly, host site visits, and allow you to write a case study. Confirm this before you start, not after.</li>\n  <li><strong>Connected.</strong> Ideally, their team has relationships with 2–3 other companies in your target segment. A lighthouse that can make introductions is worth three times one that can't.</li>\n  <li><strong>Appropriately resourced.</strong> Large enough to take you seriously, small enough to move without 18 months of procurement process.</li>\n</ul>\n<p>The lighthouse account question to ask yourself before signing: <em>if this engagement goes perfectly, does it open three more doors or one?</em></p>\n\n<blockquote><p>[Founder interview placeholder] \"Our first customer was a great fit technically — but they were so specialised that nobody else in the market had the same setup. We spent nine months building something we couldn't sell again. The second customer was less exciting commercially but introduced us to four others in the first year.\"</p></blockquote>\n\n<h2>4. Founder-led sales: why you cannot delegate this yet</h2>\n<p>In this phase, all selling is done by the founder. This is not a resource constraint — it is the right strategy.</p>\n<p>Industrial buyers are buying trust as much as they are buying technology. They need to believe that if something goes wrong at 2am on the production line, someone who deeply understands the product will pick up the phone. A junior sales hire cannot provide that assurance. You can.</p>\n<p>Beyond the trust argument, there is a learning argument. The conversations you have here are the most valuable research you will ever do. You will hear objections you didn't anticipate, discover use cases you hadn't considered, and learn exactly what language resonates with the buyer. If you delegate these conversations before you've had them yourself, you lose that intelligence permanently.</p>\n<p><strong>What founder-led industrial sales actually looks like:</strong></p>\n<ul>\n  <li>Plant floor presence is non-negotiable. You need to physically see the environment you're selling into. Remote demos in this phase signal that you don't understand the operational context.</li>\n  <li>Lead with the problem, not the product. Industrial buyers are deeply sceptical of technology vendors. Open with what you've seen in their type of operation, not with a slide deck about your AI platform.</li>\n  <li>Expect long timelines and be explicit about them. A buyer who is genuinely interested but tells you their budget cycle opens in eight months is a good sign, not a bad one.</li>\n</ul>\n\n<h2>5. Advisor bench: your unfair access advantage</h2>\n<p>Before your first sales hire, before your first marketing spend, you need 2–3 advisors who have operated at a senior level on the buy side in your target sector.</p>\n<p>Not investors. Not ex-consultants. Operators — people who have run plants, led operations, or held procurement responsibility in the type of company you're selling to. People who still have the phone numbers of the buyers you need to reach.</p>\n<p>A good advisor does three things: opens doors through personal introductions, translates your product narrative into language that resonates with operators, and pressure-tests your ICP by telling you honestly when an account is the wrong fit.</p>\n<p>Equity is the standard compensation (0.1–0.25% is typical for active advisors at this stage). The selection criteria: would this person's name on a reference call change the outcome?</p>\n\n<h2>AI in Get Access</h2>\n<p>AI tools are genuinely useful for two tasks in this phase: ICP research and account prioritisation. Tools like Clay, Apollo, and LinkedIn Sales Navigator with AI enrichment can help you map which accounts have the operational characteristics you're looking for — capex announcements, hiring signals for OT roles, recent digital transformation press releases. What AI cannot do is replace the warm intro. The access problem in industrial is relational, not informational.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Ready to move on? Exit checklist</div>\n  <ul>\n    <li>You have a clearly defined ICP in operational terms — not just \"mid-size manufacturers\"</li>\n    <li>You have a warm intro path to at least one qualified target account</li>\n    <li>You have identified a lighthouse account candidate that is replicable, not just winnable</li>\n    <li>You have 2–3 advisors with genuine buy-side relationships in your target sector</li>\n    <li>You have personally had 10+ discovery conversations with your target buyer profile</li>\n  </ul>\n</div>\n<div class=\"next-link\">Next in the series\n  <span onclick=\"openDetail('i1')\">Win the Pilot — How to qualify, structure, price, and close your first industrial pilot →</span>\n</div>\n","i2":"\n<h1>Make it Repeatable: Early Traction</h1>\n<p class=\"lede\">Winning your first industrial customer feels like a breakthrough. It isn't. Each plant is a quasi-independent business unit with its own P&L, its own operations leadership, and its own technology budget. Your enterprise deal is actually 15–30 individual sales cycles wearing a trench coat. The question in this phase is whether you can run those cycles without the founder in the room.</p>\n\n<h2>The core diagnostic: are you repeatable or just lucky?</h2>\n<p>There is a precise test for whether you are genuinely in the Make it Repeatable phase: can your first GTM hire close a deal — or replicate a site deployment — without you involved? If the answer is no, you are still in the Win the Pilot phase, regardless of how many customers you have.</p>\n<p>Founders often confuse their own deal-closing ability with a repeatable motion. They are not the same thing. A motion is repeatable when it is documented, transferable, and executable by someone who is not you. Until then, you have a founder-dependent sales operation, which is not a company — it's a consultant with a product.</p>\n\n<h2>1. The site replication problem</h2>\n<p>Planet A's research describes the manufacturing expansion challenge precisely: each plant operates as a quasi-independent business unit. The plant manager in Stuttgart has little incentive to adopt a solution championed by her counterpart in Lyon. Budget authority is localised. Technology stacks are fragmented. Your \"enterprise deal\" is actually dozens of individual sales cycles.</p>\n<p>The solution is a pincer movement: advance simultaneously from the plant floor up and from the C-suite down.</p>\n<p><strong>From the bottom up — win locally with change management:</strong></p>\n<ul>\n  <li>Prove undeniable value at the plant level with clear before/after metrics</li>\n  <li>Create a one-page internal case study — before/after metrics, plant manager quote, hard ROI — that headquarters can distribute across the network</li>\n  <li>Design your deployment so the second plant requires less hand-holding than the first. As one founder described it: \"First plant, you're in the lead. Second plant, they're in the lead. Third plant, you're coaching.\"</li>\n</ul>\n<p><strong>From the top down — build executive alignment:</strong></p>\n<ul>\n  <li>Work with your executive sponsor to showcase Plant A's results in corporate operations reviews or monthly performance calls. When the VP of Manufacturing highlights that Plant A improved OEE by 12% using your solution, every other plant manager on that call takes notice.</li>\n  <li>Create inter-plant FOMO — the competitive dynamics between plant managers are one of the most powerful expansion forces in industrial. Use them deliberately.</li>\n</ul>\n\n<h2>2. Champion transfer: your most underused distribution channel</h2>\n<p>In industrial GTM, champions change jobs. A plant manager who championed your deployment at Plant A gets promoted to VP Operations across a larger division. A Head of Digital Manufacturing moves from one automotive OEM to a competitor. These moments are not just relationship management opportunities — they are your most effective distribution channel.</p>\n<p>A champion who has seen your product work and trusted it enough to stake their professional reputation on it is infinitely more valuable than any cold outreach. They will open doors no amount of marketing spend can buy.</p>\n<p><strong>How to systematise this:</strong></p>\n<ul>\n  <li>Track your champions explicitly — LinkedIn notifications, Google alerts on their name, regular check-in calls even after deployment is stable</li>\n  <li>When a champion moves, reach out within the first two weeks. They are most receptive to bringing you in during their first 90 days in a new role, when they are looking to demonstrate impact</li>\n  <li>Build a \"champion alumni\" layer into your CRM — not just the account, but the person, regardless of where they are</li>\n</ul>\n\n<h2>3. Reference customer as primary GTM asset</h2>\n<p>In industrial, your reference customer is more valuable than any marketing channel, any content programme, and most paid campaigns combined. A buyer who can call a plant manager they respect and hear \"yes, it works, here is our OEE number before and after\" is functionally already sold.</p>\n<p>Most founders underinvest in this. They treat the reference customer as a retention task — keep them happy, get the renewal. The better frame is to treat them as a marketing investment: produce a detailed case study, enable site visits, build a reference call programme, and actively introduce them at industry events.</p>\n<p>The test: would your best customer accept a call from a prospect on 24 hours' notice? If not, the relationship isn't in the right place yet.</p>\n\n<h2>4. Sector focus vs. staying horizontal</h2>\n<p>At some point in this phase you will face the horizontal vs. vertical decision. You can see the problem in both automotive and food & beverage. You have pilots in both. Which do you prioritise?</p>\n<p>The honest answer is: you cannot do both well at this stage. The sales motion, the buyer language, the integration requirements, the regulatory environment — all of these differ enough between sectors that trying to serve both without a dominant position in either will produce mediocre results everywhere.</p>\n<p>The decision criteria:</p>\n<ul>\n  <li><strong>Where do you have reference customers willing to speak publicly?</strong> Go where your social proof is strongest</li>\n  <li><strong>Where is your champion density highest?</strong> The sector where you know the most buyers gives you the fastest expansion path</li>\n  <li><strong>Where is the replication unit economics best?</strong> Some sectors have more standardised plant configurations; others require bespoke integration every time</li>\n</ul>\n\n<h2>5. Metrics that matter in this phase</h2>\n<p>The metrics that matter in Make it Repeatable are different from what you tracked in Win the Pilot. ARR is a lagging indicator. The leading indicators are:</p>\n<ul>\n  <li><strong>Pilot-to-production rate.</strong> What percentage of pilots convert? Below 50% is a warning signal — something is wrong in your qualification or pilot structure</li>\n  <li><strong>Site expansion velocity.</strong> How many new sites per existing account per year? This is the industrial equivalent of NRR — it measures whether your product delivers enough value to justify procurement going through the process again at a new location</li>\n  <li><strong>Time from pilot start to first invoice.</strong> This measures the efficiency of your commercial process, not just your technical delivery</li>\n  <li><strong>NRR weighted by site, not by account.</strong> A customer with 20 plants and 3 active deployments has very different expansion potential than a customer with 3 plants and 3 deployments. Account-level NRR hides this</li>\n  <li><strong>Champion pipeline depth.</strong> How many active champions do you have across current and former customers? This is your primary leading indicator of future pipeline</li>\n</ul>\n\n<h2>AI in Make it Repeatable</h2>\n<p>The highest-value AI applications in this phase are in pipeline management and deployment standardisation. AI-assisted CRM enrichment can help track champion movements automatically. AI tools can also help analyse early deployment data to predict which sites are most likely to expand — letting your small team prioritise commercially rather than reactively.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Ready to move on? Exit checklist</div>\n  <ul>\n    <li>Your first GTM hire can run a complete site deployment cycle without you involved</li>\n    <li>You have a documented site replication playbook — not in your head, on paper</li>\n    <li>You have at least one reference customer willing to take calls from prospects on short notice</li>\n    <li>You have made the sector focus decision — or have a clear rationale for staying horizontal</li>\n    <li>Your pilot-to-production rate is above 50%</li>\n  </ul>\n</div>\n<div class=\"next-link\">Next in the series\n  <span onclick=\"openDetail('i3')\">Build the Machine — Channel strategy, international expansion, and GTM org design →</span>\n</div>\n","i3":"\n<h1>Build the Machine: Scale</h1>\n<p class=\"lede\">You have a proven motion. You have reference customers. Your first GTM hire is closing deals without you. Now the question is how to scale — and the answer in industrial is more complex than in SaaS. The choices you make about channel, international expansion, and org design in this phase will determine whether you build a €50M business or a €500M one.</p>\n\n<h2>The direct vs. channel decision</h2>\n<p>This is the most consequential strategic decision in the Build the Machine phase, and most founders make it by default rather than by design. They get approached by an OEM or a systems integrator, see the potential for accelerated distribution, and say yes before they've thought through the implications.</p>\n<p>The strategic frame is simple: do you want to own the customer relationship, or do you want to distribute through someone who already does?</p>\n<p><strong>Direct is defensible but doesn't scale easily.</strong> You learn everything. You own the data. You control pricing. But you are constrained by your headcount and the speed at which you can hire and train good industrial salespeople — who are rare and expensive.</p>\n<p><strong>Channel scales but you lose control.</strong> OEMs and SIs can get you into accounts that would take you years to reach directly. But they will take margin, they will prioritise their own relationships over yours, and you will learn far less about your end customers.</p>\n<p>The principle: build channel to amplify a proven direct motion, never to replace one you haven't built yet. Partners amplify. They don't fix.</p>\n\n<h2>OEM and SI partnerships: how to do it right</h2>\n<p>Planet A's research offers a sharp framing from founder experience: <em>\"Buyers don't think in terms of feature sets; they think in terms of who they call when something breaks. That's your north star for identifying the right partner.\"</em></p>\n<p>A few practical principles that separate successful industrial partnerships from expensive distractions:</p>\n<ul>\n  <li><strong>Win deals independently first.</strong> Partners will take you more seriously once you show you can win deals on your own — even against them. One or two successful reference deployments are often the minimum ticket to entry. Without that proof, you risk becoming a \"pilot partner\" who never makes it into the real sales motion.</li>\n  <li><strong>Align with the existing point of accountability.</strong> If warehouse automation is already \"owned\" by Integrator X, your GTM path is usually to slot in alongside them rather than trying to fight for the prime position. Reducing procurement friction matters more than credit.</li>\n  <li><strong>Define the commercial structure before you sign anything.</strong> Margin architecture, deal registration, what you will and won't support, how disputes are resolved. Industrial channel agreements that aren't specific about these points become expensive conflicts.</li>\n  <li><strong>Retain control of your innovation evangelism.</strong> Partners will position your product in whatever way wins them the deal. That isn't always how you want to be positioned. Maintain direct customer touchpoints even in channelled deployments.</li>\n</ul>\n<p>The CarbonRe/ABB partnership illustrates this well: CarbonRe had already proven its technology independently before teaming up with ABB for the cement sector. The partnership accelerated distribution into accounts ABB already owned — it didn't substitute for a proven product and direct sales track record.</p>\n\n<h2>International expansion: start where you already have a foothold</h2>\n<p>The most common international expansion mistake in industrial is choosing a new market based on market size rather than access. Going to the US because it's the largest market, or to Germany because manufacturing is dense there, without a single warm relationship on the ground, is how founders spend 18 months and significant capital getting nowhere.</p>\n<p>The right expansion logic: go where your lighthouse customer already has operations. A reference customer with plants in three countries is a three-country expansion strategy. They can make introductions, provide air cover with procurement, and give you the operational context for that market before you've paid for a single flight.</p>\n<p>Regulatory fragmentation in industrial is real and significant. What is acceptable integration practice in Germany may require a separate certification process in the US, and a completely different approach in Japan. Map this before you expand, not after you've signed a customer who expects the same deployment timeline as your domestic accounts.</p>\n\n<h2>Building the industrial GTM organisation</h2>\n<p>The sequencing of GTM org build in industrial differs from SaaS in one important way: <strong>vertical leads before regional leads.</strong></p>\n<p>In SaaS, geographic expansion is often the natural scaling vector — you hire a US team, then EMEA, then APAC. In industrial, sector expertise scales faster than geography. A hire who deeply understands automotive manufacturing and has relationships across the sector will outperform a regional generalist in every geography where there are automotive plants — which is everywhere.</p>\n<p>Build order:</p>\n<ul>\n  <li><strong>First:</strong> Sector-specific account executive (deep industry + relationships)</li>\n  <li><strong>Second:</strong> Customer success with commercial ownership (manages expansion, owns NRR)</li>\n  <li><strong>Third:</strong> Channel / alliance manager (once direct is proven)</li>\n  <li><strong>Fourth:</strong> Regional leads — only once the sector playbook is documented and transferable</li>\n</ul>\n\n<h2>AI in Build the Machine</h2>\n<p>At this phase, AI becomes operationally relevant in territory planning, forecasting, and RevOps. AI-assisted tools can help map which accounts in a new geography match your proven ICP, prioritise expansion opportunities within existing accounts based on plant footprint and digital maturity signals, and improve forecast accuracy by analysing deal pattern data across your growing pipeline. This is where AI moves from a nice-to-have to a genuine efficiency multiplier.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">You're at scale when:</div>\n  <ul>\n    <li>Channel accounts for 30%+ of pipeline — and you understand the economics of each channel</li>\n    <li>You have at least one live international deployment that came through a warm intro, not cold entry</li>\n    <li>The founder is fully out of day-to-day selling</li>\n    <li>You have sector vertical leads who own their segment's revenue, not just regional teams</li>\n  </ul>\n</div>\n<div class=\"next-link\">\n  <span onclick=\"showView('matrix')\">← Back to the full playbook</span>\n</div>\n","s0":"\n<h1>Get Access: Foundations (Enterprise SaaS)</h1>\n<p class=\"lede\">The SaaS founder's version of this phase has one advantage over industrial: buyers will sometimes respond to cold outreach. It has one significant trap: because early traction is easier to get, founders often mistake noise for signal and scale before the foundation is solid.</p>\n\n<h2>The founding insight: narrow beats broad, every time</h2>\n<p>The single highest-leverage decision in SaaS GTM foundations is how narrow you make your initial beachhead. Almost every failed GTM we've seen shares one trait: an ICP too vague to act on.</p>\n<p>\"Companies that need project management\" is not an ICP. \"Series B SaaS companies with 30–100 employees using Salesforce whose sales cycles exceed 60 days\" is an ICP. The difference is whether your team can open a browser and immediately identify 50 companies that fit the description.</p>\n<p>High Alpha's research is direct on this: \"If your ICP is too broad and you haven't closed more than a handful of medium to large deals, it's too early to bring in a sales or marketing hire and expect them to genuinely impact your pipeline.\"</p>\n\n<h2>1. ICP definition: four dimensions that actually matter</h2>\n<p>Beyond firmographics, the ICP dimensions that predict whether a prospect will buy quickly and stay are:</p>\n<ul>\n  <li><strong>Pain point intensity.</strong> Do they feel the problem badly enough to actually write a cheque? Many prospects acknowledge the problem. Far fewer feel it urgently enough to disrupt their current workflow and budget cycle to fix it.</li>\n  <li><strong>Buying triggers.</strong> What event forces them to act now, not \"next quarter\"? Regulatory change, leadership transition, a competitor doing something new, a failed audit — these are the triggers that turn an interested prospect into an active buyer. Knowing your triggers is what separates pipeline that moves from pipeline that sits.</li>\n  <li><strong>Decision speed.</strong> How many people need to sign off and how fast can it happen? This determines your sales cycle length and directly affects your unit economics. A deal that requires six stakeholders and two procurement committees is a different business from one that closes with a single champion's approval.</li>\n  <li><strong>Expansion potential.</strong> Can this account grow with you, or is it a dead end at the initial contract value? The best early customers are those where land-and-expand is structurally possible — more users, more use cases, more data volume.</li>\n</ul>\n\n<h2>2. The beachhead: stay narrow until it hurts</h2>\n<p>Pick one segment. Stay there until you have five referenceable customers. Resist the gravitational pull of the adjacent opportunity — the slightly different buyer, the \"we could easily sell to them too\" distraction.</p>\n<p>The reason is operational, not strategic: you cannot build a repeatable sales motion across two segments simultaneously at this stage. Your messaging, your objection handling, your case studies, your referral network — all of these need to compound within a single segment before they become useful. Spreading across two segments halves the speed at which they compound.</p>\n<p>The five referenceable customers test: can you name five customers who would take a reference call from a prospect tomorrow and say something useful? If not, stay in the beachhead.</p>\n\n<h2>3. Founder-led sales: the irreplaceable phase</h2>\n<p>Every early SaaS sale should be made by the founder. Not because you can't afford a salesperson — because you are the only person who can have the conversation that will teach you what you need to know.</p>\n<p>The framework from the SaaS GTM playbook research: \"Run founder-led outbound. 100 emails, 10 meetings, 3 customers. Refine ICP based on who bought. Double down on that profile.\"</p>\n<p>The output of founder-led sales isn't just revenue. It's:</p>\n<ul>\n  <li>A precise ICP validated by who actually bought, not who you thought would buy</li>\n  <li>The exact language your buyer uses to describe their problem — which becomes your messaging</li>\n  <li>The objections that come up in every deal — which become your sales playbook</li>\n  <li>The decision-making pattern — who gets involved when, what they need to see — which becomes your sales process</li>\n</ul>\n<p>None of this can be delegated. If you hire before you have it, your first salesperson will fail — and you won't know why.</p>\n\n<h2>4. Early pricing: charge enough to signal seriousness</h2>\n<p>The most common early pricing mistake is optimising for ease of entry rather than signal. A price that feels \"accessible\" to the buyer often signals that you don't have much conviction in your own value.</p>\n<p>Two principles:</p>\n<ul>\n  <li><strong>One simple tier.</strong> No freemium, no trial-forever, no \"starter plan.\" A single paid tier removes the need to explain a pricing structure and forces you to have a direct conversation about value.</li>\n  <li><strong>Price high enough that the conversation is serious.</strong> A customer paying €500/month will engage with your product differently from one paying €5,000/month. The latter has skin in the game. They will push you to deliver value in a way that makes your product better.</li>\n</ul>\n<p>The ACV danger zone to be aware of: deals below €15K are often too cheap to support a sales-led motion but too expensive for pure self-serve. If your pricing lands here, you need to either reduce friction toward self-serve or increase value to justify a proper sales process. Middle ground is expensive.</p>\n\n<h2>AI in Get Access</h2>\n<p>AI tools have become genuinely useful for ICP research and outbound personalisation. Tools like Clay can enrich prospect lists with intent signals, technographic data, and hiring patterns that indicate a buying trigger. AI-powered personalisation can improve reply rates on outbound sequences — but it amplifies a clear ICP, it doesn't substitute for one. Define the target precisely before using AI to reach it at scale.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Ready to move on? Exit checklist</div>\n  <ul>\n    <li>You have 3 paying customers closed without heavy discounting or founder personal relationships</li>\n    <li>You can name the 50 companies you should be able to win in year one</li>\n    <li>You have a clear buying trigger that explains why customers act now vs. later</li>\n    <li>You have heard the same objections enough times to have good answers to all of them</li>\n    <li>You have at least one customer who paid without you explaining the product for more than 30 minutes</li>\n  </ul>\n</div>\n<div class=\"next-link\">Next in the series\n  <span onclick=\"openDetail('s1')\">Win the Pilot — Trial mechanics, success criteria, and your first GTM hire →</span>\n</div>\n","s1":"\n<h1>Win the Pilot: First Revenue (Enterprise SaaS)</h1>\n<p class=\"lede\">In SaaS, the pilot phase is more forgiving than in industrial — trials are shorter, success criteria are more measurable, and conversion timelines are weeks rather than months. But the failure modes are just as expensive: open-ended trials that never close, single-threaded deals that die when a champion moves, and first GTM hires who can't replicate what the founder did.</p>\n\n<h2>Trial vs. POC: the decision that determines your sales motion</h2>\n<p>The trial vs. structured POC decision is one of the most consequential early choices in SaaS GTM — and it's almost entirely determined by ACV.</p>\n<ul>\n  <li><strong>Below €15–20K ACV:</strong> free or low-friction trial. The economics of a structured sales process don't work at this price point. Your job is to minimise time-to-value so the product sells itself.</li>\n  <li><strong>Above €20K ACV:</strong> structured, time-boxed POC with defined success criteria. At this price point, the buyer needs to be actively invested in making the evaluation work. A free trial treats the evaluation as the vendor's problem. A POC makes it shared.</li>\n</ul>\n<p>The mistake is running a free trial for deals that should be POCs. The buyer doesn't engage seriously, the trial drags on, and you eventually discount heavily to force a close — training the buyer that your list price is fiction.</p>\n\n<h2>Success criteria: the most important document in any evaluation</h2>\n<p>Define success criteria with the champion before the trial or POC starts. This document becomes your close criteria — at the end of the evaluation, either the criteria were met and you're moving to a contract conversation, or they weren't and you need to understand why.</p>\n<p><strong>Good success criteria are:</strong></p>\n<ul>\n  <li>Specific and measurable — \"reduce report generation time from 4 hours to 30 minutes,\" not \"improve reporting\"</li>\n  <li>Tied to business outcomes the buyer already cares about, not technical capabilities you want to demonstrate</li>\n  <li>Agreed in writing by both the champion and at least one economic stakeholder before the evaluation begins</li>\n  <li>Associated with a timeline — the evaluation has a specific end date</li>\n</ul>\n<p>Hard end dates matter more than almost anything else in SaaS trials. Don't try to optimise a system you haven't built yet — nail your market, build your acquisition engine, lock down retention, then scale. In that order. Open-ended trials don't convert — they become informal product usage that the buyer has no commercial pressure to formalise.</p>\n\n<h2>Multi-threading: if only one person knows about you, you don't have a deal</h2>\n<p>The most common single cause of SaaS deal death is single-threading — having a relationship with only one person at the account. When that person leaves, is promoted, or loses internal political capital, the deal dies with them.</p>\n<p>Multi-threading means building relationships with at least three people at the account: the day-to-day champion, the economic buyer who controls the budget, and one other stakeholder who can either accelerate or block the deal. These are usually different people, and they need different conversations.</p>\n<p>The champion needs to see tactical value — how does this make their job easier? The economic buyer needs to see ROI — what does this cost vs. what does it return? The third stakeholder — often an IT lead, a legal reviewer, or a department head — needs reassurance that this isn't going to create problems for them.</p>\n\n<h2>First GTM hire: the most expensive mistake to make too early</h2>\n<p>Most founders hire their first GTM person too early — before the sales motion is documented, before the ICP is sharp, before they know what objections come up and how to handle them.</p>\n<p>High Alpha's research is direct: \"Those early hires will fail if you pass the revenue baton off too early. Being an AE at Salesforce is very, very different from being a first sales hire at a pre-product market fit SaaS company with $1M in ARR.\"</p>\n<p>The right profile for a first SaaS GTM hire:</p>\n<ul>\n  <li>Has sold to your exact buyer profile before — not just \"enterprise software,\" but specifically your buyer persona at your ACV range</li>\n  <li>Is comfortable with ambiguity — they are building a process, not following one</li>\n  <li>Can qualify rigorously — bad pipeline is more damaging than no pipeline at this stage</li>\n  <li>Will tell you when the product isn't good enough, not just when the prospect isn't ready</li>\n</ul>\n<p>The trigger for hiring: you have more qualified opportunities than you can personally pursue, not \"I need to free up founder time for product.\"</p>\n\n<h2>AI in Win the Pilot</h2>\n<p>AI deal coaching tools (Gong, Chorus, and AI-native alternatives) have become practically useful at this stage for analysing call recordings and identifying what's working and what isn't. For founders building a sales playbook, these tools compress the feedback loop significantly. AI can also help with stakeholder mapping — identifying who else at an account is relevant to the deal — and with personalising proposal and POC documentation at scale.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Ready to move on? Exit checklist</div>\n  <ul>\n    <li>Your first GTM hire has closed a deal you were never involved in</li>\n    <li>You have defined success criteria on every active evaluation — in writing, agreed by both sides</li>\n    <li>You know your average ACV and average sales cycle length with enough confidence to forecast</li>\n    <li>You have multi-threaded at least three deals successfully</li>\n    <li>CAC payback is understood — even if not yet optimised</li>\n  </ul>\n</div>\n<div class=\"next-link\">Next in the series\n  <span onclick=\"openDetail('s2')\">Make it Repeatable — Sales playbook, expansion motion, and the metrics that actually matter →</span>\n</div>\n","s2":"\n<h1>Make it Repeatable: Early Traction (Enterprise SaaS)</h1>\n<p class=\"lede\">The transition from Win the Pilot to Make it Repeatable is the hardest phase change in SaaS GTM — and the one founders most often misjudge. Having a few customers is not the same as having a repeatable motion. Having a good product is not the same as having a system that finds, converts, and expands customers without your direct involvement.</p>\n\n<h2>The repeatability test</h2>\n<p>Can your AE close a deal you were never involved in? If the answer is no, you are not in this phase yet.</p>\n<p>Repeatability means the motion works without founder heroics. It means a new AE with your playbook, your messaging, and your qualification criteria can produce similar results to an experienced one. It means your sales process is documented well enough that you could hand it to someone who has never seen your product and they could run a deal.</p>\n<p>Most founders believe they are repeatable before they are. The test is not whether you have a playbook written down — it's whether someone else has used it successfully.</p>\n\n<h2>1. Codify the sales process: pick a methodology and commit</h2>\n<p>Pick one sales methodology and build your CRM stages around it. MEDDIC and SPICED are the most commonly used for enterprise SaaS; both work. What doesn't work is a hybrid of three methodologies poorly implemented, or a custom process that lives in the founder's head.</p>\n<p>MEDDIC stands for: Metrics (quantified business impact), Economic Buyer (who controls budget), Decision Criteria (how they'll choose), Decision Process (the steps to a decision), Identify Pain (the specific problem), Champion (the internal advocate). It works best for complex, multi-stakeholder enterprise deals.</p>\n<p>SPICED — Situation, Pain, Impact, Critical Event, Decision — is simpler and faster to implement, making it better for mid-market motions or smaller teams.</p>\n<p>The choice matters less than the consistency. Whatever you pick, every deal in your CRM should have the same fields populated, and every deal review should use the same vocabulary. This is what makes performance measurable and coaching possible.</p>\n\n<h2>2. Expansion motion: define the trigger before you need it</h2>\n<p>In SaaS, land-and-expand is the primary growth mechanic. But \"expand when the customer is ready\" is not a motion — it's hope. The expansion motion needs a defined trigger that happens automatically, not opportunistically.</p>\n<p>Common expansion triggers:</p>\n<ul>\n  <li><strong>Usage threshold.</strong> When a team's usage hits 80% of their plan capacity, the CS playbook fires an expansion conversation.</li>\n  <li><strong>New team onboarding.</strong> When a second department starts using the product, that's a signal to expand the commercial scope.</li>\n  <li><strong>Time-based.</strong> 90 days before renewal, a structured QBR reviews value delivered and identifies the next use case.</li>\n</ul>\n<p>The trigger should be in the CRM and owned by Customer Success. Expansion that requires a founder conversation is not repeatable expansion.</p>\n\n<h2>3. Marketing that works before €5M ARR</h2>\n<p>Most marketing channels don't work at early ARR. The ones that do:</p>\n<ul>\n  <li><strong>Founder content.</strong> LinkedIn posts, podcast appearances, conference talks — content where the founder's credibility and point of view is the asset. This compounds slowly but builds the kind of trust that accelerates deals.</li>\n  <li><strong>SEO/organic search.</strong> If your buyers search for your category, organic content is the highest-ROI channel at this stage. The 2025 data shows SEO delivering roughly 748% ROI for B2B thought leadership over a 9-month horizon.</li>\n  <li><strong>Events and community.</strong> Targeted industry events where your ICP concentrates. Not sponsorships — participation. Being on stage, running a roundtable, hosting a dinner for 12 relevant buyers.</li>\n</ul>\n<p>What doesn't work before €5M ARR: brand advertising, paid search at scale, SDR teams of more than 2 people, analyst relations, PR firms. These channels require either scale or patience that early-stage companies don't have.</p>\n\n<h2>4. Metrics that actually matter</h2>\n<p>Two metrics define whether you have a healthy SaaS business at this stage:</p>\n<p><strong>Net Dollar Retention (NDR) above 110%.</strong> This means your existing customer base is growing faster than it churns. NDR above 110% is the single most reliable indicator of product-market fit maturity. Below 100%, you are losing ground regardless of how much new business you close.</p>\n<p><strong>CAC payback under 18 months.</strong> How long does it take to recover the cost of acquiring a customer from their subscription revenue? Median CAC payback has stretched to 20–23 months for private SaaS companies, more than double the 8–10 month benchmark from five years ago. At the €1–5M ARR stage, the benchmark is tighter: the median CAC payback at this stage is 8 months for top performers, while slower-growing peers exceed 14 months. Anything above 18 months is a warning signal — either your acquisition costs are too high or your conversion rates are too low.</p>\n<p>The combination that unlocks Series A fundraising: NDR &gt;110% with CAC payback &lt;12 months. Companies that hit both see their median growth rate approximately double compared to peers.</p>\n\n<h2>AI in Make it Repeatable</h2>\n<p>AI-assisted forecasting has become genuinely accurate at this stage — tools that analyse deal patterns, identify at-risk accounts, and surface expansion signals from product usage data. The highest-ROI application is using AI to identify which accounts are ready for an expansion conversation before CS would naturally initiate one, based on usage patterns and engagement signals.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Ready to move on? Exit checklist</div>\n  <ul>\n    <li>NDR exceeds 110%</li>\n    <li>At least 2 AEs are consistently hitting quota without founder involvement</li>\n    <li>CAC payback is under 18 months and you know which channels drive the best payback</li>\n    <li>You have a defined expansion trigger in your CRM — not just in a document</li>\n    <li>You can answer the question \"what does a good deal look like?\" with specific, measurable criteria</li>\n  </ul>\n</div>\n<div class=\"next-link\">Next in the series\n  <span onclick=\"openDetail('s3')\">Build the Machine — Channel, international expansion, and GTM org design →</span>\n</div>\n","s3":"\n<h1>Build the Machine: Scale (Enterprise SaaS)</h1>\n<p class=\"lede\">In SaaS, \"pouring fuel on the fire\" is a common metaphor for this phase. The risk is that founders pour fuel before they have a fire — scaling a GTM motion before its unit economics are understood is how companies burn through Series B capital and find themselves restructuring at €10M ARR.</p>\n\n<h2>The scale test: is the motion efficient enough to pour fuel on?</h2>\n<p>Before scaling GTM spend, answer one question: does adding one quota-carrying AE generate more revenue than it costs within 12 months?</p>\n<p>If the answer is yes, scale. If the answer is no or \"we don't know,\" building a larger team won't fix the underlying problem — it will make it more expensive. The 2025 benchmarks show the median new customer CAC ratio has increased to €2 of sales and marketing expense per €1 of new customer ARR acquired. Top quartile companies are at €1.20. If you're above €2.50, fix the motion before scaling it.</p>\n\n<h2>1. Channel and partner motion</h2>\n<p>Channel in SaaS works differently from industrial. The most relevant channel types:</p>\n<ul>\n  <li><strong>Technology partners / integrations.</strong> Being embedded in platforms your buyers already use (Salesforce, HubSpot, Slack) can drive significant inbound pipeline with low CAC. This only works if the integration delivers genuine workflow value.</li>\n  <li><strong>Resellers and VARs.</strong> Work best when the reseller has deep relationships with your ICP and your product requires minimal configuration. Margins need to be healthy enough — typically 20–30% — to make it worth the reseller's sales team's time.</li>\n  <li><strong>System integrators.</strong> For higher-ACV, more complex SaaS, SI partnerships can unlock enterprise accounts that would take 18+ months to win directly. The trade-off is the same as in industrial: you lose customer proximity.</li>\n</ul>\n<p>The same principle applies as in industrial: <strong>build channel to amplify direct, not to replace it.</strong> Founders who build channel before their direct motion is proven lose the customer learnings that come from direct sales — learnings that are essential for product development, positioning, and ICP refinement.</p>\n\n<h2>2. International expansion</h2>\n<p>The counter-intuitive principle of SaaS international expansion: go where demand already exists, not where it looks largest on paper.</p>\n<p>The signal: where is inbound already coming from without you targeting it? If you're seeing trials and inquiries from Germany without a German sales team, German buyers are already finding you. That's your first international market — not the market that looks biggest in a TAM analysis.</p>\n<p>The sequencing that works:</p>\n<ul>\n  <li>Hire one country-based AE or BD lead who combines language, cultural knowledge, and ICP relationships</li>\n  <li>Run them against the inbound demand that's already there before investing in demand generation</li>\n  <li>Add marketing and SDR support only after the AE has closed at least 3 accounts independently</li>\n</ul>\n<p>The sequencing that doesn't work: hire a VP International before any in-country AEs, build a demand generation programme before you have in-country sales coverage, or open three markets simultaneously to \"spread risk.\"</p>\n\n<h2>3. GTM org build sequence</h2>\n<p>The order in which you build the GTM organisation matters as much as who you hire. The sequence that consistently works:</p>\n<ul>\n  <li><strong>First:</strong> Sales manager — once you have 3+ AEs, someone needs to run pipeline reviews, coach deals, and own forecast accuracy. This hire frees the founder from day-to-day sales management.</li>\n  <li><strong>Second:</strong> Revenue Operations — as pipeline complexity grows, someone needs to own CRM hygiene, reporting, and the data infrastructure that makes forecasting reliable. RevOps is undervalued at this stage and overvalued at earlier ones.</li>\n  <li><strong>Third:</strong> Solutions engineer / pre-sales — for deals above €50K ACV, having a technical resource who can run deep product evaluations frees AEs to focus on commercial progression rather than product demonstration.</li>\n</ul>\n<p>What not to hire at this stage: a Chief Revenue Officer (premature unless you have €5M+ ARR and multiple GTM motions to coordinate), a large SDR team without a documented outbound playbook, or a marketing team before your demand generation approach is validated.</p>\n\n<h2>4. Scaling spend efficiently</h2>\n<p>The SaaS Magic Number — net new ARR divided by prior quarter's sales and marketing spend — should be above 0.75 before you scale GTM spend significantly. Below 0.75, you are generating less than €0.75 of new ARR for every €1 of GTM investment. That's a structural problem, not a volume problem.</p>\n<p>The channels that typically have the best payback at scale: customer referrals (lowest CAC of any channel), organic search (compounds over time), and events where your ICP concentrates. Paid search at scale and large SDR teams typically have the worst payback in complex B2B SaaS.</p>\n\n<h2>AI in Build the Machine</h2>\n<p>At scale, AI becomes relevant in territory planning, account prioritisation, and forecasting. AI-powered revenue intelligence platforms can identify which accounts in your ICP universe are showing buying signals before they reach out, enabling your team to prioritise pipeline generation effort. In forecasting, AI models trained on your historical deal data outperform subjective sales rep estimates consistently from about 50+ closed deals of history onwards.</p>\n\n<div class=\"checklist\">\n  <div class=\"checklist-title\">You're at scale when:</div>\n  <ul>\n    <li>The SaaS Magic Number is above 0.75 and stable</li>\n    <li>Channel contributes meaningfully to pipeline — with its own measured CAC</li>\n    <li>You have at least one functioning international market with a local AE hitting quota</li>\n    <li>The founder is out of day-to-day sales and managing through a sales manager</li>\n    <li>Rule of 40 (revenue growth % + free cash flow margin %) is in positive territory or on a clear path there</li>\n  </ul>\n</div>\n<div class=\"next-link\">\n  <span onclick=\"showView('matrix')\">← Back to the full playbook</span>\n</div>\n","app1":"\n<h1>Appendix: Hiring Guide</h1>\n<p class=\"lede\">The hiring decisions that matter most in GTM are the ones made too early, with the wrong profile, against a job description copied from a company at a different stage. This appendix covers the first GTM hire decision for both industrial and SaaS motions, plus exemplary JDs for each.</p>\n\n<h2>When to make your first GTM hire</h2>\n<p>The trigger is not time, not ARR, and not investor pressure. The trigger is: you have more qualified opportunities than you can personally pursue, and you have enough clarity on what a good deal looks like to give someone else a fighting chance.</p>\n<p>Specifically, you are ready when:</p>\n<ul>\n  <li>You have closed at least 3 deals yourself (industrial: at least 1 pilot converted to production)</li>\n  <li>You can describe your ICP precisely enough that someone else could qualify a prospect without asking you</li>\n  <li>You have a documented sales process — even rough — that captures how deals move from first meeting to close</li>\n  <li>You know what good looks like: you can describe a deal at each stage and say whether it's progressing normally</li>\n</ul>\n<p>High Alpha's research is blunt: \"Those early hires will fail if you pass the revenue baton off too early.\" The most expensive version of this mistake is hiring a senior sales leader who builds a team around a process that doesn't work yet.</p>\n\n<h2>Industrial: first GTM hire profile</h2>\n<p>The industrial first hire is not a classic SaaS AE. The profile that works:</p>\n<ul>\n  <li><strong>15+ years of sector experience on the buy or sell side.</strong> They need to understand the operational environment — what a plant manager worries about, what a procurement cycle looks like, what OT/IT integration actually involves.</li>\n  <li><strong>Existing relationships in your target sector.</strong> Their Rolodex is more valuable than their quota history. A hire who can make 5 calls on their first week and get 5 meetings with qualified buyers is worth 10x a hunter who needs 6 months to build relationships from scratch.</li>\n  <li><strong>Comfort with long cycles and ambiguity.</strong> Industrial deals take months. A hire who needs to see pipeline move quickly to stay motivated will leave before they've delivered anything.</li>\n  <li><strong>Technical credibility.</strong> They don't need to be an engineer, but they need to be able to walk a plant floor and have a credible conversation about integration, safety requirements, and operational impact.</li>\n</ul>\n\n<h3>Exemplary JD: Industrial Sales Lead</h3>\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Role: Industrial Sales Lead (Seed / Series A stage)</div>\n  <ul>\n    <li><strong>What you'll do:</strong> Own end-to-end sales cycles for our industrial accounts — from first warm intro to signed production contract. Build and maintain relationships with plant managers, operations leads, and procurement at mid-large manufacturers. Structure and run funded pilots with clearly defined success criteria and commercial bridge to production.</li>\n    <li><strong>What we're looking for:</strong> 10–20 years experience in [target sector — automotive / manufacturing / energy]. Existing relationships with buyer-side decision makers in this sector. Track record of closing complex, multi-stakeholder deals with 6–18 month cycles. Comfortable operating without a large support structure. Will coach the founders, not the other way around.</li>\n    <li><strong>What we're not looking for:</strong> A strong quota history at a large SaaS company. A background primarily in outbound prospecting. Someone who needs a full sales support stack to be productive.</li>\n    <li><strong>Compensation:</strong> [Competitive base] + commission on ARR closed + equity at 0.25–0.75% depending on stage and experience. Equity matters here — this hire is building the motion, not executing an established one.</li>\n  </ul>\n</div>\n\n<h2>Enterprise SaaS: first GTM hire profile</h2>\n<p>The SaaS first hire is a quota-carrying AE who has sold to your exact buyer profile before — not just \"enterprise software\" generically, but specifically your buyer persona at your ACV range in your category.</p>\n<ul>\n  <li><strong>2–5 years of AE experience at a comparable company.</strong> Not Salesforce. Not a company 10x your size with a full sales support stack. A company at a similar stage selling a similar product to a similar buyer.</li>\n  <li><strong>Strong qualification instincts.</strong> The most valuable skill in an early-stage SaaS AE is knowing when to walk away from a bad deal. Bad pipeline wastes more time than no pipeline.</li>\n  <li><strong>Process builder, not process follower.</strong> They are writing the playbook as they go. They need to be comfortable with that and genuinely interested in the work of figuring out what works.</li>\n  <li><strong>Coachable and transparent.</strong> They will tell you when the product isn't ready, not just when the prospect isn't. This is rare and valuable.</li>\n</ul>\n\n<h3>Exemplary JD: Account Executive (SaaS, Seed / Series A)</h3>\n<div class=\"checklist\">\n  <div class=\"checklist-title\">Role: Account Executive (First GTM hire)</div>\n  <ul>\n    <li><strong>What you'll do:</strong> Own the full sales cycle from qualified lead to closed deal. Help build our sales playbook — documenting what works, what doesn't, and what we need to improve. Run structured POC/trial processes with defined success criteria. Multi-thread deals across champion, economic buyer, and technical stakeholders.</li>\n    <li><strong>What we're looking for:</strong> 2–5 years AE experience closing deals at €20K–€150K ACV in [relevant category]. Experience selling to [your specific buyer persona]. Strong qualification discipline — knows when to pursue and when to disqualify. Wants to build something, not manage a territory that already exists.</li>\n    <li><strong>What we're not looking for:</strong> Someone who needs a BDR to generate their pipeline (we don't have one yet). A background exclusively in large-company SaaS where everything is resourced. Someone whose definition of success is hitting a quota set by someone else.</li>\n    <li><strong>Compensation:</strong> [Competitive base for stage] + OTE at 50/50 split + equity at 0.1–0.3%. Commission on ARR closed, paid on cash collected.</li>\n  </ul>\n</div>\n\n<h2>When to hire a Country / Regional Manager</h2>\n<p>A Country Manager is a Scale-phase hire. Hiring one before Build the Machine is typically premature — you don't yet have a proven domestic playbook to replicate, and a Country Manager without a playbook will build something inconsistent with what's working at home.</p>\n<p>The trigger: you have inbound demand from a geography, at least one or two deals closed there without a dedicated in-country resource, and a domestic playbook documented enough to be the starting point for an in-country adaptation.</p>\n<p>The profile: combines commercial ownership (owns revenue targets), local market knowledge (understands buyer culture, regulatory environment, key accounts), and player-coach ability (can sell themselves while building a small team). In industrial, the Country Manager profile overlaps heavily with the first GTM hire profile — sector relationships in that geography matter more than regional management experience.</p>\n","app2":"\n<h1>Appendix: GTM Tools by Phase</h1>\n<p class=\"lede\">Tools should follow motion — build a RevOps stack before you have a repeatable process and you'll spend more time managing the tools than using them. This reference card covers the category of tool needed at each phase, with decision criteria for selection. Specific product names are excluded intentionally — the category stays stable; the best tool in each category changes every 12–18 months.</p>\n\n<h2>Principle: minimum viable stack at each phase</h2>\n<p>The single most common tooling mistake in early-stage GTM is over-tooling. Founders see what large SaaS companies use and try to replicate it. The result is a complex, expensive stack with low adoption that produces data nobody trusts.</p>\n<p>At each phase, the question to ask is: \"What is the minimum tool investment that supports the motion I have, not the motion I'm planning to have?\"</p>\n\n<h2>Get Access phase tools</h2>\n<ul>\n  <li><strong>CRM (lightweight).</strong> Enough to track accounts, contacts, and conversation history. HubSpot free tier or Notion-based CRM is sufficient. Do not invest in Salesforce at this stage — the complexity will slow you down.</li>\n  <li><strong>LinkedIn Sales Navigator.</strong> The single most useful prospecting tool for both industrial and SaaS motions. Allows you to identify decision-makers, track job changes (critical for champion mobility), and monitor account activity.</li>\n  <li><strong>AI-powered account research (optional).</strong> Tools like Clay can enrich prospect lists with intent signals, firmographic data, and technographic information. Useful for ICP validation and outbound personalisation — but only after the ICP is defined, not before.</li>\n  <li><strong>Email tracking.</strong> Basic open and click tracking on outbound emails. Tells you whether your messaging is getting any engagement.</li>\n</ul>\n\n<h2>Win the Pilot phase tools</h2>\n<ul>\n  <li><strong>CRM with pipeline tracking.</strong> By this point you need proper deal stages, deal value tracking, and basic forecasting. This is when to set up your CRM properly — stages that reflect your actual sales process, not a generic template.</li>\n  <li><strong>Sales engagement tool.</strong> Manages outbound sequences, follow-up cadences, and multi-channel outreach. Prevents deals from going cold because of manual follow-up failures.</li>\n  <li><strong>Conversation intelligence (optional at this stage).</strong> Call recording and analysis tools that identify patterns in sales calls — what questions work, what objections come up, what language resonates. Useful for building the playbook but not essential until you have a second AE to coach.</li>\n  <li><strong>Document management / e-signature.</strong> For proposal and contract execution. Removes unnecessary friction at the close stage.</li>\n</ul>\n\n<h2>Make it Repeatable phase tools</h2>\n<ul>\n  <li><strong>CRM with full sales methodology support.</strong> By this point your CRM stages should map directly to your sales methodology (MEDDIC, SPICED, or equivalent). Every deal field should mean something and be consistently populated.</li>\n  <li><strong>Conversation intelligence.</strong> Now essential — you are coaching AEs and need data on how deals progress. Gong, Chorus, and AI-native alternatives all work. Choose based on your team size and budget.</li>\n  <li><strong>Customer Success platform.</strong> Tracks product usage, health scores, and expansion signals. The trigger for expansion conversations should come from this tool, not from CS intuition.</li>\n  <li><strong>Basic revenue reporting.</strong> ARR, NRR, CAC payback by channel, pipeline coverage. These should be available in near-real-time, not prepared manually for board meetings.</li>\n</ul>\n\n<h2>Build the Machine phase tools</h2>\n<ul>\n  <li><strong>Full RevOps stack.</strong> CRM, marketing automation, CS platform, and BI tool all integrated. Data flows automatically between systems — leads to pipeline to revenue to expansion without manual handoffs.</li>\n  <li><strong>Territory planning and account prioritisation.</strong> AI-powered tools that identify which accounts in your ICP universe are showing buying signals, and help allocate AE time to highest-probability opportunities.</li>\n  <li><strong>Forecasting intelligence.</strong> AI forecasting tools that predict close probability based on deal signals, not sales rep optimism. Most reliable from 50+ historical closed deals onwards.</li>\n  <li><strong>ABM platform (SaaS only).</strong> Account-based marketing at scale — coordinates marketing and sales effort around specific target accounts, personalises content and outreach by account. Only cost-effective above approximately €5M ARR.</li>\n</ul>\n\n<h2>A note on AI-native GTM tools</h2>\n<p>The AI GTM tool landscape is evolving rapidly. In 2025–26, the most practically useful categories are: AI-powered ICP and account research (Clay and equivalents), AI deal coaching (conversation intelligence with AI analysis), and AI-assisted outbound personalisation. The tools that remain mostly hype at this stage: AI \"fully autonomous\" SDR tools (reply rates are poor and damage sender reputation), AI-generated content at scale without human review (quality degrades), and AI pricing optimisation (requires more data than most early-stage companies have).</p>\n<p>The principle: AI accelerates a working motion. It doesn't create one. Build the motion first, then use AI to scale it.</p>\n"}
+</script>
+<script>
+const articles = [
+  {
+    id:'i0', type:'ind', phase:'Get Access', phaseLabel:'Foundations', published: true,
+    note: 'Medium interview dependency — framework holds; buyer quotes enrich',
+    topics:['ICP definition','Market access strategy','Lighthouse account selection','Founder-led sales','Advisor bench','AI in prospecting & ICP scoring'],
+    takeaways:[
+      'Industrial buyers don\'t respond to cold outreach — market access is a prerequisite, not a sales tactic',
+      'ICP must include operational context: brownfield vs. greenfield, capex cycle, OT maturity',
+      'Choose your lighthouse account for replicability, not just because they said yes',
+      'All early sales are founder-led — technical credibility and plant-floor presence are non-negotiable',
+      'Build a 2–3 person advisor bench with buy-side experience before your first sales conversation',
+      'AI can accelerate ICP scoring and account research — but cannot replace the warm intro'
+    ],
+    pitfalls:[
+      'Hiring a GTM person before you have a lighthouse account and a clear pitch',
+      'Choosing a lighthouse customer too unique to replicate',
+      'Attempting remote-only demos with industrial buyers in the first meeting'
+    ],
+    transition:'You\'re ready for the next stage when you have a warm intro to a qualified account, a replicable lighthouse candidate, and can articulate your ICP in operational terms — and have had 10+ discovery conversations yourself.'
+  },
+  {
+    id:'i1', type:'ind', phase:'Win the Pilot', phaseLabel:'First Revenue', published: false,
+    note: '⚠ High interview dependency — purgatory stories and buyer accounts are essential before writing',
+    topics:['Pilot qualification criteria','Funded pilot / NRE pricing','Milestone & exit gates','Stakeholder map','Pilot-to-production bridge','First GTM hire','AI in demo personalisation'],
+    takeaways:[
+      'Not every interested buyer deserves a pilot — qualify on budget, sponsorship, and replicability first',
+      'Always charge for pilots — even a small NRE fee separates serious buyers from curious ones',
+      'Write milestone gates and exit criteria before the pilot starts',
+      'Map every stakeholder: ops approves, EHS can veto, IT/OT must integrate, procurement owns terms',
+      'Agree commercial terms for production before the pilot ends — not after',
+      'First GTM hire: 15+ years on the buy side in your sector — relationships beat sales skills'
+    ],
+    pitfalls:[
+      'Pilot purgatory: no exit criteria, no milestone gates, no commercial commitment to continue',
+      'Free pilots — they legitimise nothing and attract tire-kickers',
+      'Hiring a classic SaaS AE for an industrial sell'
+    ],
+    transition:'You\'re ready when 2+ pilots have converted to production and your first GTM hire can run a pilot cycle without you in the room.'
+  },
+  {
+    id:'i2', type:'ind', phase:'Make it Repeatable', phaseLabel:'Early Traction', published: true,
+    note: 'Low interview dependency — pattern is well-established; write now, enrich later',
+    topics:['Site replication playbook','Champion transfer strategy','Reference customer program','Sector vs. horizontal decision','Key metrics','AI in forecasting & pipeline management'],
+    takeaways:[
+      'Industrial expansion is site-by-site — each site is a new sale, often with separate procurement',
+      'Systematise champion mobility: when a champion moves companies, that\'s your warmest possible intro',
+      'Your reference customer is your primary GTM asset — invest in their story, not just their renewal',
+      'Decide sector focus vs. horizontal before scaling headcount — you cannot do both at once',
+      'Metrics: pilot-to-production rate, site expansion velocity, NRR weighted by site'
+    ],
+    pitfalls:[
+      'Assuming land-and-expand works the same as in SaaS — it doesn\'t',
+      'Scaling headcount before the site replication playbook is documented',
+      'Neglecting champion tracking — mobility is a distribution channel'
+    ],
+    transition:'Ready when the site replication playbook works without the founder, sector focus is decided, and you have a reference customer willing to speak publicly.'
+  },
+  {
+    id:'i3', type:'ind', phase:'Build the Machine', phaseLabel:'Scale', published: true,
+    note: 'Medium interview dependency — channel mechanics are documented; CVC interviews add unique colour',
+    topics:['Direct vs. channel decision','OEM & SI playbook','International expansion','GTM org design','AI in territory planning & RevOps'],
+    takeaways:[
+      'Direct vs. channel is a strategic choice — own the customer or distribute, not both at once',
+      'OEM and SI onboarding requires clear margin architecture, deal registration, and support boundaries',
+      'For international: start where your lighthouse customer has a sister site — never start cold',
+      'Build vertical leads before regional leads — sector depth scales faster than geography in industrial'
+    ],
+    pitfalls:[
+      'Building a channel before your direct motion is proven — partners amplify, they don\'t fix',
+      'Going international without a replicable domestic playbook',
+      'Underestimating regulatory fragmentation as both a moat and a blocker'
+    ],
+    transition:'At scale when channel accounts for 30%+ of pipeline, you have a live international site, and the founder is fully out of day-to-day selling.'
+  },
+  {
+    id:'s0', type:'saas', phase:'Get Access', phaseLabel:'Foundations', published: true,
+    note: 'Low interview dependency — SaaS GTM is well-documented; write now',
+    topics:['ICP definition','Beachhead segment','Founder-led sales','Early pricing','AI in prospecting & ICP scoring'],
+    takeaways:[
+      'Name the 50 companies you should win in year one — if you can\'t, your ICP is too vague',
+      'Pick one beachhead segment and stay there until you have 5 referenceable customers',
+      'All early sales are founder-led — do not hire before you can close 3 customers yourself',
+      'One simple pricing tier, no freemium, charge enough to signal you are serious',
+      'AI tools can identify intent signals and accelerate ICP research — but founder presence still closes'
+    ],
+    pitfalls:[
+      'ICP too broad — no wedge, no repeatability, nothing to hire against',
+      'Launching freemium before product-market fit',
+      'Hiring a BDR before the founder has personally closed 3 customers'
+    ],
+    transition:'Ready when you have 3 paying customers closed without heavy discounting or founder personal relationships.'
+  },
+  {
+    id:'s1', type:'saas', phase:'Win the Pilot', phaseLabel:'First Revenue', published: true,
+    note: 'Medium interview dependency — framework is known; founder quotes on what actually converts add value',
+    topics:['Trial vs. POC decision','Success criteria framework','Multi-threading','First GTM hire','AI in deal coaching & stakeholder mapping'],
+    takeaways:[
+      'Free trial works for sub-$20K ACV; above that, run a structured paid POC',
+      'Define success criteria with the champion before the trial starts — it becomes your close criteria',
+      'Set a hard end date on every trial — open-ended trials don\'t convert',
+      'Multi-thread from day one: if only one person knows about you, you don\'t have a deal',
+      'First GTM hire: a quota-carrying AE who has sold to your exact buyer profile before'
+    ],
+    pitfalls:[
+      'Open-ended trials with no success criteria and no end date',
+      'Single-threaded deals — champion leaves and the deal dies',
+      'Hiring a generalist AE instead of someone who knows your buyer'
+    ],
+    transition:'Ready when your first AE has closed a deal you were never involved in and you understand your ACV and sales cycle length.'
+  },
+  {
+    id:'s2', type:'saas', phase:'Make it Repeatable', phaseLabel:'Early Traction', published: true,
+    note: 'Low interview dependency — write now',
+    topics:['Repeatable sales playbook','Expansion & upsell motion','Marketing that works early','Key metrics','AI in forecasting & pipeline management'],
+    takeaways:[
+      'Can your AE close a deal without you? If not, you are not in this stage',
+      'Pick one sales methodology (MEDDIC or SPICED) and build your CRM stages around it',
+      'Define the expansion trigger: usage threshold, team size, or new use case',
+      'Marketing before $5M ARR: SEO, founder content, and events — not brand or paid ads',
+      'NDR above 110% means you have a business; CAC payback under 18 months means it works'
+    ],
+    pitfalls:[
+      'Investing in marketing before you have a repeatable sales motion',
+      'No defined expansion trigger — upsells happen by accident, not by design',
+      'Optimising NDR before CAC payback is understood'
+    ],
+    transition:'Ready when NDR exceeds 110%, at least 2 AEs are consistently hitting quota, and you know your CAC payback precisely.'
+  },
+  {
+    id:'s3', type:'saas', phase:'Build the Machine', phaseLabel:'Scale', published: true,
+    note: 'Low interview dependency — write now',
+    topics:['Channel & partner motion','International expansion','GTM org design','Scaling spend efficiently','AI in territory planning & RevOps'],
+    takeaways:[
+      'Before scaling spend: does adding one AE generate more than it costs within 12 months?',
+      'Channel only works when direct is proven — partners amplify, they don\'t fix a broken motion',
+      'Go international where inbound is already coming from, not where the market looks biggest',
+      'GTM org sequence: sales manager → RevOps → solutions engineer, in that order'
+    ],
+    pitfalls:[
+      'Scaling headcount before unit economics are understood',
+      'Building channel too early and losing customer learnings from direct sales',
+      'Hiring a sales manager before you have a playbook for them to manage against'
+    ],
+    transition:'At scale when Rule of 40 is in sight, channel contributes meaningfully to pipeline, and you have a functioning multi-region motion.'
+  },
+  {
+    id:'app1', type:'appendix', phase:'Appendix', phaseLabel:'Hiring Guide', published: true,
+    note: 'Low interview dependency — write now',
+    topics:['First GTM hire criteria (Industrial vs. SaaS)','Exemplary JDs: Industrial sales lead','Exemplary JDs: SaaS AE','Country / regional manager profile','When to hire each role'],
+    takeaways:[
+      'The industrial first hire is not a classic AE — relationships and sector credibility come first',
+      'A SaaS AE JD built around quota and outbound will attract the wrong person for industrial',
+      'Country managers are a Scale-stage hire — premature in Make it Repeatable',
+      'The best JD is built backwards from the specific deals you need to close, not from generic templates'
+    ],
+    pitfalls:[
+      'Copying a JD from a larger company at a different stage',
+      'Hiring a country manager before the domestic playbook is proven',
+      'Optimising for past quota attainment over buyer relationships in industrial'
+    ],
+    transition:'N/A — reference material to use throughout all stages.'
+  },
+  {
+    id:'app2', type:'appendix', phase:'Appendix', phaseLabel:'Tools by Phase', published: true,
+    note: 'No interview dependency — write now. Tool names will date; focus on categories and decision criteria',
+    topics:['CRM selection criteria by stage','Prospecting & intent tools','Sales engagement tools','RevOps & forecasting tools','AI-native GTM tools emerging in 2024–25'],
+    takeaways:[
+      'Tools should follow motion — don\'t build a RevOps stack before you have a repeatable sales motion',
+      'In Get Access: lightweight CRM + LinkedIn Sales Navigator is sufficient',
+      'In Win the Pilot: add a sales engagement layer and basic pipeline tracking',
+      'In Make it Repeatable: CRM discipline and forecasting matter for the first time',
+      'In Build the Machine: RevOps, territory planning, and BI become load-bearing'
+    ],
+    pitfalls:[
+      'Over-tooling in early stages — complexity before process',
+      'Choosing a CRM that doesn\'t scale (then migrating data mid-growth)',
+      'Treating AI GTM tools as strategy rather than acceleration'
+    ],
+    transition:'N/A — reference card. One page per stage, category-level recommendations only.'
+  }
+];
+
+const articleContent = JSON.parse(document.getElementById('article-data').textContent);
+
+let history = [];
+
+function showView(view) {
+  document.getElementById('matrix-view').style.display = view === 'matrix' ? 'block' : 'none';
+  document.getElementById('detail-view').style.display = view === 'detail' ? 'block' : 'none';
+  document.getElementById('article-view').style.display = view === 'article' ? 'block' : 'none';
+  document.getElementById('nav-back').style.display = view !== 'matrix' ? 'flex' : 'none';
+}
+
+function handleBack() {
+  if (history.length > 1) {
+    history.pop();
+    const prev = history[history.length - 1];
+    if (prev.view === 'matrix') { showView('matrix'); }
+    else if (prev.view === 'detail') { openDetail(prev.id, true); }
+    else if (prev.view === 'article') { openArticle(prev.id, true); }
+  } else {
+    showView('matrix');
+    history = [];
+  }
+}
+
+function openDetail(id, fromHistory) {
+  const a = articles.find(x => x.id === id);
+  if (!fromHistory) history.push({view:'detail', id});
+
+  const isInd = a.type === 'ind';
+  const isApp = a.type === 'appendix';
+  document.getElementById('detail-meta').innerHTML =
+    isApp
+      ? `<span class="badge" style="background:#f0f0ec;color:#888">Appendix</span>
+         <span class="badge badge-phase">${a.phase}</span>`
+      : `<span class="badge ${isInd?'badge-ind':'badge-saas'}">${isInd?'Industrial':'Enterprise SaaS'}</span>
+         <span class="badge badge-phase">${a.phase}</span>`;
+
+  document.getElementById('detail-title').textContent = a.phaseLabel;
+  document.getElementById('detail-subtitle').textContent = a.topics.join(' · ');
+
+  document.getElementById('detail-cards').innerHTML = `
+    <div class="detail-card">
+      <div class="detail-card-label">Key takeaways</div>
+      <ul>${a.takeaways.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div class="detail-card pitfalls">
+      <div class="detail-card-label">Biggest pitfalls</div>
+      <ul>${a.pitfalls.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>`;
+
+  document.getElementById('detail-transition').innerHTML = a.transition
+    ? `<div class="transition-box ${isInd?'':'saas'}">
+        <div class="transition-box-label">When to move to the next phase</div>
+        <p>${a.transition}</p>
+      </div>`
+    : '';
+
+  document.getElementById('detail-cta').innerHTML = a.published
+    ? `<button class="read-article-btn ${isApp?'':''}${isInd?'':'saas'}" onclick="openArticle('${id}')" style="${isApp?'background:#444;':''}">Read the full article →</button>`
+    : `<span class="coming-soon-btn">Full article coming soon</span>`;
+
+  showView('detail');
+}
+
+function openArticle(id, fromHistory) {
+  const a = articles.find(x => x.id === id);
+  if (!fromHistory) history.push({view:'article', id});
+
+  const isInd = a.type === 'ind';
+  const isApp = a.type === 'appendix';
+  document.getElementById('article-meta').innerHTML = isApp
+    ? `<span class="badge" style="background:#f0f0ec;color:#888">Appendix</span>
+       <span class="badge badge-phase">${a.phaseLabel}</span>`
+    : `<span class="badge ${isInd?'badge-ind':'badge-saas'}">${isInd?'Industrial':'Enterprise SaaS'}</span>
+       <span class="badge badge-phase">${a.phase} · ${a.phaseLabel}</span>`;
+
+  document.getElementById('article-body').innerHTML = articleContent[id] || '<p>Coming soon.</p>';
+  showView('article');
+  window.scrollTo(0,0);
+}
+
+function buildMatrix() {
+  const indRow = document.getElementById('row-ind');
+  const saasRow = document.getElementById('row-saas');
+  const appRow = document.getElementById('row-app');
+
+  const indLabel = document.createElement('div');
+  indLabel.className = 'row-label';
+  indLabel.innerHTML = '<div class="row-label-inner ind">Industrial</div>';
+  indRow.appendChild(indLabel);
+
+  const saasLabel = document.createElement('div');
+  saasLabel.className = 'row-label';
+  saasLabel.innerHTML = '<div class="row-label-inner saas">Enterprise SaaS</div>';
+  saasRow.appendChild(saasLabel);
+
+  const appLabel = document.createElement('div');
+  appLabel.className = 'row-label';
+  appLabel.innerHTML = '<div class="row-label-inner" style="color:#888">Appendix</div>';
+  appRow.appendChild(appLabel);
+
+  articles.forEach(a => {
+    const cell = document.createElement('div');
+    const isApp = a.type === 'appendix';
+    cell.className = `cell ${isApp ? 'app' : a.type} ${a.published ? 'published' : 'draft'}`;
+    const noteColor = a.note && a.note.startsWith('⚠') ? '#c0392b' : '#888';
+    cell.innerHTML = `
+      <div class="cell-title">${a.phaseLabel}</div>
+      <div class="cell-topics">${a.topics.join(' · ')}</div>
+      ${a.note ? `<div style="font-size:10px;color:${noteColor};margin-top:6px;line-height:1.4">${a.note}</div>` : ''}
+      <span class="cell-status ${a.published?'status-published':'status-draft'}">${a.published?'Available':'Coming soon'}</span>`;
+    cell.onclick = () => { history = [{view:'matrix'}]; openDetail(a.id); };
+    if (a.type === 'ind') indRow.appendChild(cell);
+    else if (a.type === 'saas') saasRow.appendChild(cell);
+    else appRow.appendChild(cell);
+  });
+}
+
+buildMatrix();
+history = [{view:'matrix'}];
+</script>
+</body>
+</html>
